@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Page</title>
+</head>
+<body>
+    <p>This page will log your IP address and then redirect you to the Microsoft Form.</p>
+
+    <script>
+        var formUrl = "https://forms.office.com/Pages/ResponsePage.aspx?id=your-form-id&...";
+
+        // Fetch the user's public IP address
+        fetch('https://api.ipgeolocation.io/ipgeo')
+            .then(response => response.json())
+            .then(data => {
+                var ipAddress = data.ip;
+                console.log('User IP Address:', ipAddress);
+
+                // Send the IP address to the external logging service
+                fetch('https://eoynptgm4uv654n.m.pipedream.net', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ipAddress }),
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        // Redirect to the Microsoft Form after logging the IP
+                        setTimeout(function () {
+                            window.location.href = formUrl;
+                        }, 3000); // 3000 milliseconds (3 seconds) delay
+                    })
+                    .catch(error => console.error('Error logging IP address:', error));
+            })
+            .catch(error => console.error('Error fetching IP address:', error));
+    </script>
+</body>
+</html>
